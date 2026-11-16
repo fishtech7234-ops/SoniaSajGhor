@@ -2,81 +2,59 @@ package com.soniyasajghar
 
 import android.app.Activity
 import android.os.Bundle
-import android.Manifest
-import android.content.pm.PackageManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 
 class MainActivity : Activity() {
-
-    private val micPermission = Manifest.permission.RECORD_AUDIO
-    private val requestCode = 100
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val layout = LinearLayout(this)
         layout.orientation = LinearLayout.VERTICAL
-        layout.setPadding(30, 50, 30, 30)
+        layout.setPadding(24, 30, 24, 20)
 
         val title = TextView(this)
         title.text = "Sonia Saj Ghor"
         title.textSize = 26f
+        layout.addView(title)
 
-        val info = TextView(this)
-        info.text = "Microphone permission is required."
-        info.textSize = 18f
+        fun addDevice(name: String) {
+            val heading = TextView(this)
+            heading.text = name
+            heading.textSize = 22f
+            layout.addView(heading)
 
-        val startButton = Button(this)
-        startButton.text = "Allow Microphone"
+            val status = TextView(this)
+            status.text = "Status: Disconnected"
+            layout.addView(status)
 
-        startButton.setOnClickListener {
-            if (checkSelfPermission(micPermission) ==
-                PackageManager.PERMISSION_GRANTED) {
+            val connect = Button(this)
+            connect.text = "Connect"
+            layout.addView(connect)
 
-                Toast.makeText(
-                    this,
-                    "Microphone permission already granted",
-                    Toast.LENGTH_SHORT
-                ).show()
+            connect.setOnClickListener {
+                if (connect.text == "Connect") {
+                    connect.text = "Disconnect"
+                    status.text = "Status: Connected (Demo)"
+                } else {
+                    connect.text = "Connect"
+                    status.text = "Status: Disconnected"
+                }
+            }
 
-            } else {
-                requestPermissions(
-                    arrayOf(micPermission),
-                    requestCode
-                )
+            val audio = Button(this)
+            audio.text = "Audio ON"
+            layout.addView(audio)
+
+            audio.setOnClickListener {
+                audio.text = if (audio.text == "Audio ON") "Audio OFF" else "Audio ON"
             }
         }
 
-        layout.addView(title)
-        layout.addView(info)
-        layout.addView(startButton)
+        addDevice("Samsung M20")
+        addDevice("Redmi 12")
 
         setContentView(layout)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(
-            requestCode,
-            permissions,
-            grantResults
-        )
-
-        if (requestCode == this.requestCode &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            Toast.makeText(
-                this,
-                "Microphone permission granted",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
     }
 }
